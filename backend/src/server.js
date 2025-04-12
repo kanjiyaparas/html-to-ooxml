@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const allowedOrigins = ['https://html--ooxml.vercel.app'];
+const allowedOrigins = ['https://html-to-ooxml.vercel.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
