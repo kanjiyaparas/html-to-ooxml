@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import axios from 'axios';
@@ -6,18 +7,26 @@ import { saveAs } from 'file-saver';
 function App() {
   const editorRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [ooxml, setOoxml] = useState('');
 
   const handleConvert = async () => {
     const html = editorRef.current.getContent();
     setLoading(true);
-
+  
     try {
-      const res = await axios.post('http://localhost:3001/convert', { html }, {
+      // 1. Get the OOXML preview
+      const xmlRes = await axios.post('https://html-to-ooxml.onrender.com/convert-preview', { html });
+      if (xmlRes.data && xmlRes.data.ooxml) {
+        setOoxml(xmlRes.data.ooxml);
+      }
+  
+      // 2. Download actual .docx
+      const docxRes = await axios.post('https://html-to-ooxml.onrender.com/convert-docx', { html }, {
         responseType: 'blob',
       });
-
+  
       saveAs(
-        new Blob([res.data], {
+        new Blob([docxRes.data], {
           type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         }),
         'output.docx'
@@ -26,10 +35,9 @@ function App() {
       alert('Conversion failed!');
       console.error(err);
     }
-
+  
     setLoading(false);
   };
-
   return (
     <div style={{ padding: 20 }}>
       <h2>HTML to .docx Converter (Styled)</h2>
@@ -65,6 +73,22 @@ function App() {
       >
         {loading ? 'Converting...' : 'Convert & Download'}
       </button>
+
+      {ooxml && (
+        <div style={{ marginTop: 30 }}>
+          <h3>🔍 OOXML Preview</h3>
+          <pre style={{
+            background: '#f4f4f4',
+            padding: 20,
+            borderRadius: 5,
+            overflowX: 'auto',
+            maxHeight: 300,
+            whiteSpace: 'pre-wrap'
+          }}>
+            {ooxml}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }
