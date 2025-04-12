@@ -43,7 +43,7 @@ function App() {
       <h2>HTML to .docx Converter (Styled)</h2>
 
       <Editor
-        apiKey="1800qht7mdc06i65pnblmat83560kgdbma2n9t6a189pftbk"
+        apiKey="pfslezhfceo05a2eada79zz1b5fzlq1bqrcamv0r3b3wqs4i"
         onInit={(evt, editor) => (editorRef.current = editor)}
         initialValue={`<p>This is an <strong>example</strong> paragraph. <span style="color:red; font-size:18px;"><strong>Red bold text</strong></span></p>`}
         init={{
